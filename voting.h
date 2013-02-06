@@ -17,10 +17,23 @@
 // Voting_read
 // ------------
 
-bool voting_read (std::istream&);
+bool voting_read (std::istream&, string[]);
 
 // ------------
 // voting_write
 // ------------
 
 void voting_print (std::ostream&, string[]);
+
+// -------------
+// voting_solve
+// -------------
+
+/**
+ * read, eval, print loop
+ * @param r a std::istream
+ * @param w a std::ostream
+ */
+void voting_solve (std::istream&, std::ostream&);
+
+#endif // Collatz_h

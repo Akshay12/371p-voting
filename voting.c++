@@ -17,7 +17,7 @@
 // voting_read
 // ------------
 
-bool voting_read (std::istream& r) {
+bool voting_read (std::istream& r, string[] b) {
 	
 	return true;
 }
@@ -26,6 +26,15 @@ bool voting_read (std::istream& r) {
 // voting_write
 // -------------
 	
-void voting_write (std::ostream& w, string[] a) {
-	
+void voting_write (std::ostream& w, string[] input) {
+	std::cout<<input[0]<<std::endl;
+}
+
+// -------------
+// voting_solve
+// -------------
+
+void voting_solve (std::istream& r, std::ostream& w) {
+	string input[]={"bob"};
+	voting_write(w, input);
 }
