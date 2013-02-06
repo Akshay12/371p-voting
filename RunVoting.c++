@@ -35,8 +35,8 @@ To document the program:
 // --------
 
 #include <iostream> // cin, cout, ios_base
-
-#include "voting.h"
+#include <string>
+#include "Voting.h"
 
 // ----
 // main
