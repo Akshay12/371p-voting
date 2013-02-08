@@ -17,6 +17,7 @@ def makeBallot(n):
 		count +=1
 	s = shuffle(s)
 	return s;
+
 #shuffle values around for a random ballot
 def shuffle(s):
 	ballot = ""
@@ -42,30 +43,35 @@ names.append("Mary");
 names.append("Lisa");
 names.append("Mario");
 names.append("Bowser");
+#######################
 
-#pick number of entrants. Between 2 and 10
-random.seed()
-count = random.randint(2,9)
-finalNames = []
-pos = 0
-while(pos < count):
-	finalNames.append(names[pos])
-	pos+=1
+linecount = 0;
+while(linecount < 1000):
+    #pick number of entrants. Between 2 and 10
+    random.seed()
+    count = random.randint(2,9)
+    finalNames = []
+    pos = 0
+    while(pos < count):
+	    finalNames.append(names[pos])
+	    pos+=1
 
-#generate ballots
-ballots = []
-c2 = count
-while(c2 > 0):
-	ballots.append(makeBallot(count))
-	c2 -=1
+    #generate ballots
+    ballots = []
+    c2 = random.randint(count, count*10);
+    while(c2 > 0):
+	    ballots.append(makeBallot(count))
+	    c2 -=1
 
-#make a sample input
-w.write('1\n')
-w.write('\n')
-w.write(str(count)+'\n')
-for l in finalNames:
-	w.write(l+'\n')
+    #make a sample input
+    w.write('1\n')
+    w.write('\n')
+    w.write(str(count)+'\n')
+    for l in finalNames:
+	    w.write(l+'\n')
+	    linecount+=1
 
-for b in ballots:
-	w.write(b+'\n')
-
+    for b in ballots:
+	    w.write(b+'\n')
+	    linecount+=1
+	 w.write('\n')
