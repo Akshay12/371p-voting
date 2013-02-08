@@ -45,8 +45,10 @@ names.append("Mario");
 names.append("Bowser");
 #######################
 
-linecount = 0;
-while(linecount < 1000):
+w.write('35\n')
+w.write('\n')
+cases = 0;
+while(cases < 35):
     #pick number of entrants. Between 2 and 10
     random.seed()
     count = random.randint(2,9)
@@ -64,14 +66,11 @@ while(linecount < 1000):
 	    c2 -=1
 
     #make a sample input
-    w.write('1\n')
-    w.write('\n')
     w.write(str(count)+'\n')
     for l in finalNames:
 	    w.write(l+'\n')
-	    linecount+=1
 
     for b in ballots:
 	    w.write(b+'\n')
-	    linecount+=1
     w.write('\n')
+    cases+=1

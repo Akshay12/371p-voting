@@ -81,6 +81,7 @@ void voting_solve (std::istream& r, std::ostream& w){
 	    voting_read(r, w, names, ballots, candidates);
 	    voting_write(w, names, ballots);
 	    tests--;
+	
 	 }
 }
 
