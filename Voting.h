@@ -25,8 +25,13 @@ bool voting_read (std::istream&, std::ostream&, std::vector<std::string>&, std::
 // voting_write
 // ------------
 
-void voting_print (std::ostream&, std::vector<std::string>&, std::vector<std::string>&);
+void voting_write (std::ostream&, std::vector<std::string>&);
 
+//-------------
+// voting_count
+//------------
+
+void voting_count(std::ostream&, std::vector<std::string>&, std::vector<std::string>&, std::vector<std::string>&, std::vector<std::string>&);
 // -------------
 // voting_solve
 // -------------
