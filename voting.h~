@@ -28,11 +28,6 @@ void voting_print (std::ostream&, string[]);
 // -------------
 // voting_solve
 // -------------
-//min max
-void minMax(int&, int&, int)
-
-//reallocate
-void reallocate()
 
 /**
  * read, eval, print loop
