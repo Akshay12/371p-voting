@@ -1,3 +1,49 @@
+// --------------------------
+// projects/collatz/Collatz.h
+// Copyright (C) 2013
+// Glenn P. Downing
+// --------------------------
+
+#ifndef Voting_h
+#define Voting_h
+
+// --------
+// includes
+// --------
+
+#include <iostream> // istream, ostream
+#include <string>
+#include <vector>
+
+// ------------
+// Voting_read
+// ------------
+
+bool voting_read (std::istream&, std::ostream&, std::vector<std::string>&, std::vector<std::string>&);
+
+// ------------
+// voting_write
+// ------------
+
+void voting_write (std::ostream&, std::vector<std::string>&);
+
+//-------------
+// voting_count
+//------------
+
+void voting_count(std::ostream&, std::vector<std::string>&, std::vector<std::string>&, std::vector<std::string>&, std::vector<std::string>&);
+// -------------
+// voting_solve
+// -------------
+
+/**
+ * read, eval, print loop
+ * @param r a std::istream
+ * @param w a std::ostream
+ */
+void voting_solve (std::istream&, std::ostream&);
+
+#endif // Collatz_h
 // ----------------------------
 // projects/collatz/Collatz.c++
 // Copyright (C) 2013
@@ -13,7 +59,6 @@
 #include <vector>
 
 #include <string.h>
-#include "Voting.h"
 
 // ------------
 // voting_read
@@ -125,13 +170,13 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
         	    losers.push_back(j);
         	}
     	}
-    	
+    	/*
     	for(size_t h = 0; h <losers.size(); h++){
     	    w<< losers[h] << " ";
     	}
     	w<<""<<endl;
     	w<<""<<endl;
-    	
+    	*/
 	//reallocate all ballots for losers, recount votes, recalculate max and min
 		reallocate(ballots, losers, votes);
 
@@ -141,9 +186,9 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
         	vote = ballots[i].front();
         	temp = vote - '0';
         	votes[temp]++;
-        	w<<ballots[i]<<endl;
+        	//w<<ballots[i]<<endl;
     	}
-    	w<<""<<endl;
+    	//w<<""<<endl;
     	max = 0;
     	min = 1000;
 		minMax(max,min,votes);
@@ -154,7 +199,7 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
         	    winners.push_back(names[k-1]);
         	}
 		}
-	    w<<"max: " <<max <<endl;
+	    //w<<"max: " <<max <<endl;
 	}
     
 }
@@ -201,4 +246,53 @@ void voting_solve (std::istream& r, std::ostream& w){
 
 
 
+
+// -------------------------------
+// projects/collatz/RunCollatz.c++
+// Copyright (C) 2013
+// Glenn P. Downing
+// -------------------------------
+
+/*
+To run the program:
+    % g++ -pedantic -std=c++0x -Wall Collatz.c++ RunCollatz.c++ -o RunCollatz
+    % valgrind RunCollatz < RunCollatz.in > RunCollatz.out
+
+To configure Doxygen:
+    % doxygen -g
+That creates the file "Doxyfile".
+Make the following edits:
+    EXTRACT_ALL            = YES
+    EXTRACT_PRIVATE        = YES
+    EXTRACT_STATIC         = YES
+    GENERATE_LATEX         = NO
+
+To document the program:
+    % doxygen Doxyfile
+*/
+
+// -------
+// defines
+// -------
+
+#ifdef ONLINE_JUDGE
+    #define NDEBUG
+#endif
+
+// --------
+// includes
+// --------
+
+#include <iostream> // cin, cout, ios_base
+#include <string>
+
+// ----
+// main
+// ----
+
+int main () {
+    using namespace std;
+//  ios_base::sync_with_stdio(false); // turn off synchronization with C I/O
+    voting_solve(cin, cout);
+    return 0;}
 

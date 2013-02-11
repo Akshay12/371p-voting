@@ -32,7 +32,7 @@ void voting_print (std::ostream&, string[]);
 void minMax(int&, int&, int)
 
 //reallocate
-void reallocate()
+void reallocate(std::vector<std::string>&, std::vector<int>&, int[])
 
 /**
  * read, eval, print loop
