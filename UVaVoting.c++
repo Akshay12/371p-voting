@@ -123,14 +123,14 @@ void reallocate(std::vector<std::string>& ballots, std::vector<int>& losers, int
 	char vote;
 	int temp;
 	for(size_t i=0; i < ballots.size(); i++){
-	    vote = ballots[i].front();
+	    vote = ballots[i].at(0);
 		temp = vote - '0';
 		for(size_t j = 0; j < losers.size(); j++){
 			while(losers[j] == temp){
 				//cut off first vote, since the vote was for a loser
 				ballots[i] = ballots[i].substr(2, ballots[i].size());
 				//recalculate vote
-				vote = ballots[i].front();
+				vote = ballots[i].at(0);
 				temp = vote - '0';
 				j = 0;
 				//loop continues until the vote is for someone who isn't a loser.
@@ -150,7 +150,7 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
     char vote;
     //count votes into array
     for(size_t i = 0; i < ballots.size(); i++){
-        vote = ballots[i].front();
+        vote = ballots[i].at(0);
         temp = vote - '0';
         votes[temp]++;
         //w<< ballots[i] << endl;
@@ -183,7 +183,7 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
 		fill_n(votes,21,-1);
 		//count all votes again
 		for(size_t i = 0; i < ballots.size(); i++){
-        	vote = ballots[i].front();
+        	vote = ballots[i].at(0);
         	temp = vote - '0';
         	votes[temp]++;
         	//w<<ballots[i]<<endl;
@@ -237,7 +237,7 @@ void voting_solve (std::istream& r, std::ostream& w){
 	    voting_write(w, winners);
 	    tests--;
 	    //newline if there are more tests
-	    if(tests >0){
+	    if(tests >-1){
 	        w<<endl;
 	    }
 	    losers.clear();
@@ -295,4 +295,3 @@ int main () {
 //  ios_base::sync_with_stdio(false); // turn off synchronization with C I/O
     voting_solve(cin, cout);
     return 0;}
-
