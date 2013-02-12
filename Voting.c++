@@ -101,7 +101,7 @@ void reallocate(std::vector<std::string>& ballots, std::vector<int>& losers, int
 			    //recalculate vote
 			    vote = ballots[i].at(0);
 			    temp = vote - '0';
-			    if(ballots[i].size() > 1){
+			    if(ballots[i].length() > 1){
 			        if(isdigit(ballots[i].at(1))){
                         vote = ballots[i].at(1);
                         temp2 = vote- '0';
@@ -120,6 +120,7 @@ void reallocate(std::vector<std::string>& ballots, std::vector<int>& losers, int
 //---------
 //counts up the ballots and chooses a winner. Uses multiple pass throughs when necessary.
 void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<std::string>& ballots, std::vector<std::string>& winners, std::vector<int>& losers){
+    winners.clear();
     int votes[21]= {-1};
     
     int temp;
@@ -131,10 +132,12 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
     for(size_t i = 0; i < ballots.size(); i++){
         vote = ballots[i].at(0);
         temp = vote - '0';
-        if(isdigit(ballots[i].at(1))){
-            vote = ballots[i].at(1);
-            temp2 = vote- '0';
-            temp = (temp * 10)+temp2;
+        if(ballots[i].length()>1){
+            if(isdigit(ballots[i].at(1))){
+                vote = ballots[i].at(1);
+                temp2 = vote- '0';
+                temp = (temp * 10)+temp2;
+            }
         }
         votes[temp]++;
     }
@@ -143,6 +146,12 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
     int max = 0;
     int min = 1000;
 	minMax(max,min,votes);
+	for(int m=0; m<21; m++){
+	    temp = votes[m];
+	    if(temp == max){
+       	    winners.push_back(names[m-1]);
+       	}
+	}
 
 //2 conditions for being done. the max votes is >= 50% (ballots.size()/2) or the max and min ar the same, meaning all the remaining candidates are tied
 	while(max <= (ballots.size()/2) && max != min){
@@ -176,7 +185,6 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
                 }
             }
         	votes[temp]++;
-        	w<<ballots[i]<<endl;
     	}
     	//w<<""<<endl;
     	max = 0;
