@@ -77,18 +77,40 @@ void minMax(int& max, int& min, int votes[]){
 void reallocate(std::vector<std::string>& ballots, std::vector<int>& losers, int votes[]){
 	char vote;
 	int temp;
+	int temp2;
 	for(size_t i=0; i < ballots.size(); i++){
-	    vote = ballots[i].front();
+	    vote = ballots[i].at(0);
 		temp = vote - '0';
+		if(ballots[i].length() >1){
+		    if(isdigit(ballots[i].at(1))){
+                vote = ballots[i].at(1);
+                temp2 = vote- '0';
+                temp = (temp * 10)+temp2;
+            }
+        }
+	//check for candidates numbered 10 or greater
 		for(size_t j = 0; j < losers.size(); j++){
 			while(losers[j] == temp){
-				//cut off first vote, since the vote was for a loser
-				ballots[i] = ballots[i].substr(2, ballots[i].size());
-				//recalculate vote
-				vote = ballots[i].front();
-				temp = vote - '0';
-				j = 0;
-				//loop continues until the vote is for someone who isn't a loser.
+		        //cut off first vote, since the vote was for a loser
+		        if(isdigit(ballots[i].at(1))){
+		            ballots[i] = ballots[i].substr(3, ballots[i].size());
+		        }
+		        else{
+			        ballots[i] = ballots[i].substr(2, ballots[i].size());
+			    }
+			    //recalculate vote
+			    vote = ballots[i].at(0);
+			    temp = vote - '0';
+			    if(ballots[i].size() > 1){
+			        if(isdigit(ballots[i].at(1))){
+                        vote = ballots[i].at(1);
+                        temp2 = vote- '0';
+                        temp = (temp * 10)+temp2;
+                    }
+                }
+                
+			    j = 0;
+			    //loop continues until the vote is for someone who isn't a loser.
 			}
 		}
 	}
@@ -103,12 +125,18 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
     int temp;
     using namespace std;
     char vote;
+    int temp2;
+    
     //count votes into array
     for(size_t i = 0; i < ballots.size(); i++){
-        vote = ballots[i].front();
+        vote = ballots[i].at(0);
         temp = vote - '0';
+        if(isdigit(ballots[i].at(1))){
+            vote = ballots[i].at(1);
+            temp2 = vote- '0';
+            temp = (temp * 10)+temp2;
+        }
         votes[temp]++;
-        //w<< ballots[i] << endl;
     }
     //w<<""<<endl;
     //find max
@@ -138,10 +166,17 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
 		fill_n(votes,21,-1);
 		//count all votes again
 		for(size_t i = 0; i < ballots.size(); i++){
-        	vote = ballots[i].front();
+        	vote = ballots[i].at(0);
         	temp = vote - '0';
+        	if(ballots[i].length() >1){
+        	    if(isdigit(ballots[i].at(1))){
+                    vote = ballots[i].at(1);
+                    temp2 = vote- '0';
+                    temp = (temp * 10)+temp2;
+                }
+            }
         	votes[temp]++;
-        	//w<<ballots[i]<<endl;
+        	w<<ballots[i]<<endl;
     	}
     	//w<<""<<endl;
     	max = 0;
