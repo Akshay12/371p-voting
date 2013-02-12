@@ -237,7 +237,7 @@ void voting_solve (std::istream& r, std::ostream& w){
 	    voting_write(w, winners);
 	    tests--;
 	    //newline if there are more tests
-	    if(tests >-1){
+	    if(tests >0){
 	        w<<endl;
 	    }
 	    losers.clear();
