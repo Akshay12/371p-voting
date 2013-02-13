@@ -7,13 +7,21 @@
 // --------
 // includes
 // --------
-
 #include <cassert>  // assert
 #include <iostream> // endl, istream, ostream
 #include <vector>
 
 #include <string.h>
-#include "Voting.h"
+
+//vector contains
+bool v_contains(std::vector<int>& losers, int num){
+    for(size_t i = 0; i<losers.size(); i++){
+        if(losers[i] == num){
+            return true;
+        }
+    }
+    return false;
+}
 
 //----
 // find vote
@@ -32,53 +40,12 @@ int findVote(std::string ballot){
             temp = (temp * 10)+temp2;
         }
     }
+	assert(temp >0);
     return temp;
 }
-
-// ------------
-// voting_read
-// ------------
-
-bool voting_read (std::istream& r, std::ostream& w, std::vector<std::string>& names, std::vector<std::string>& ballots, int numCand){
-//first clear out previous candidates and ballots
-    if(!(names.empty())){
-        names.clear();
-    }
-    if(!(ballots.empty())){
-        ballots.clear();
-    }
-//**************    
-	using namespace std;	
-	string line;
-	while(r){
-		getline(r,line);
-		if(!line.empty()){
-		    //decide weather to push line to list of names of ballots
-		    if(numCand > 0){
-		        names.push_back(line);
-		        numCand--;
-		    }
-		    else{
-		        ballots.push_back(line);
-		    }
-		}
-		else return false;
-	}
-	return true;
-}
-
-
-
-// -------------
-// voting_write
-// -------------
-	
-void voting_write (std::ostream& w, std::vector<std::string>& winners) {
-//for now, just print out all the lines.
-	for(size_t i=0; i < winners.size(); i++){
-   		w << winners[i] << std::endl;
-	}
-}
+//--------
+//minmax
+//-------
 
 //calculate min and max from votes
 void minMax(int& max, int& min, int votes[]){
@@ -90,52 +57,123 @@ void minMax(int& max, int& min, int votes[]){
         }
         if(temp < min && temp > 0){
             min = temp;
+            
         }
     }
+	assert(max >0);
 }
+// -------------
+// voting_write
+// -------------
+	
+void voting_write (std::ostream& w, std::vector<std::string>& winners) {
+    using namespace std;
+	for(size_t h= 0; h< winners.size(); h++){
+	    w<<winners[h]<<endl;
+	}
+}
+//-------
+//read
+//--------
+
+bool voting_read (std::istream& r, std::ostream& w, std::vector<std::string>& names, std::vector< std::vector<std::string> >& ballots, int numCand){
+//first clear out previous candidates and ballots
+    if(!(names.empty())){
+        names.clear();
+    }
+    if(!(ballots.empty())){
+        ballots.clear();
+    }
+//**************
+	assert(ballots.empty());
+	assert(names.empty());   
+    using namespace std;
+    vector<string> temp; 
+    ballots.push_back(temp);
+	int vote;	
+	string line;
+	while(r){
+		getline(r,line);
+		if(!line.empty()){
+		    //decide weather to push line to list of names of ballots
+		    if(numCand > 0){
+				//create one vector for ballots per candidates
+		        ballots.push_back(temp);
+		        names.push_back(line);
+		        numCand--;
+		    }
+		    else{
+		        vote = findVote(line);
+		        ballots[vote].push_back(line);
+		    }
+		}
+		else return false;
+	}
+	return true;
+}
+
+//----------
+//reallocate
+//-----------
 
 
 //takes candidates to be dropped, reallocates their votes to their next best choice
-void reallocate(std::vector<std::string>& ballots, std::vector<int>& losers, int votes[]){
+void reallocate(std::vector< std::vector<std::string> >& ballots, std::vector<int>& losers, int votes[]){
+    using namespace std;
 	int temp;
-	for(size_t i=0; i < ballots.size(); i++){
-	    temp = findVote(ballots[i]);
-	//check for candidates numbered 10 or greater
-		for(size_t j = 0; j < losers.size(); j++){
-			while(losers[j] == temp){
-		        //cut off first vote, since the vote was for a loser
-		        if(isdigit(ballots[i].at(1))){
-		            ballots[i] = ballots[i].substr(3, ballots[i].size());
+	vector<string> v;
+	string ballot;
+	int loser;
+	int check;
+	
+	for(size_t i=0; i < losers.size(); i++){
+	    loser = losers[i];
+	    //v is now the vector of a loser
+	    v = ballots[loser];
+		for(size_t j = 0; j < v.size(); j++){
+		    ballot = v[j];
+		    check = findVote(ballot);
+		    temp = 0;
+		//continue looping until a vote is found for a possible winner
+		    while(ballots[temp].empty() || (v_contains(losers,temp))){
+			//check for double digits
+		        if(check >9){
+		            ballot = ballot.substr(3, ballot.size());
 		        }
 		        else{
-			        ballots[i] = ballots[i].substr(2, ballots[i].size());
+			        ballot = ballot.substr(2, ballot.size());
 			    }
-			    //recalculate vote
-			    temp = findVote(ballots[i]);                
-			    j = 0;
-			    //loop continues until the vote is for someone who isn't a loser.
-			}
+			
+			    //find new vote, push ballot onto that vector
+			    temp = findVote(ballot);
+			    check = temp;
+            }
+			ballots[temp].push_back(ballot);
 		}
+		ballots[loser].clear();
 	}
 }
+
 //---------
 // voting_count
 //---------
 //counts up the ballots and chooses a winner. Uses multiple pass throughs when necessary.
-void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<std::string>& ballots, std::vector<std::string>& winners, std::vector<int>& losers){
+void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector< std::vector<std::string> >& ballots, std::vector<std::string>& winners, std::vector<int>& losers){
     winners.clear();
-    int votes[21]= {-1};
+    int tballots = 0;
+    int votes[21]= {0};
     
     int temp;
     using namespace std;
+    vector<string> v;
     
     //count votes into array
     for(size_t i = 0; i < ballots.size(); i++){
-        temp = findVote(ballots[i]);
-        votes[temp]++;
+        v = ballots[i];
+		votes[i] = v.size();
+		tballots+= v.size();
     }
-    //w<<""<<endl;
-    //find max
+    
     int max = 0;
     int min = 1000;
 	minMax(max,min,votes);
@@ -145,33 +183,36 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
        	    winners.push_back(names[m-1]);
        	}
 	}
-
-//2 conditions for being done. the max votes is >= 50% (ballots.size()/2) or the max and min ar the same, meaning all the remaining candidates are tied
-	while(max <= (ballots.size()/2) && max != min){
+	
+	
+	//2 conditions for being done. the max votes is >= 50% (ballots.size()/2) or the max and min ar the same, meaning all the remaining candidates are tied
+	while(max <= (tballots/2) && max != min){
 		winners.clear();
 	    for(int j= 0; j < 21; j++){
         	temp = votes[j];
-        	if(temp == min || temp ==0){
+        	if(temp == min){
         	    losers.push_back(j);
         	}
+        	 
     	}
-    	/*
-    	for(size_t h = 0; h <losers.size(); h++){
-    	    w<< losers[h] << " ";
-    	}
-    	w<<""<<endl;
-    	w<<""<<endl;
-    	*/
 	//reallocate all ballots for losers, recount votes, recalculate max and min
 		reallocate(ballots, losers, votes);
 
-		fill_n(votes,21,-1);
-		//count all votes again
-		for(size_t i = 0; i < ballots.size(); i++){
-        	temp = findVote(ballots[i]);
-        	votes[temp]++;
+    	for(size_t h = 0; h <ballots.size(); h++){
+    	    v = ballots[h];
+    	    for(size_t z= 0; z < v.size();z++){
+    	    }
     	}
-    	//w<<""<<endl;
+    	
+    	fill_n(votes,21,0);
+    	tballots = 0;
+    	//count votes again
+    	for(size_t i = 0; i < ballots.size(); i++){
+            v = ballots[i];
+			votes[i] = v.size();
+			tballots+= v.size();
+        }
+   
     	max = 0;
     	min = 1000;
 		minMax(max,min,votes);
@@ -182,10 +223,9 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
         	    winners.push_back(names[k-1]);
         	}
 		}
-	    //w<<"max: " <<max <<endl;
 	}
-    
 }
+
 
 // -------------
 // voting_solve
@@ -202,6 +242,7 @@ void voting_solve (std::istream& r, std::ostream& w){
 	//get number of tests and clear the line
 	int tests;
 	r >> tests;
+	assert(tests >0);
 	string line;
 	getline(r,line);
 	
@@ -226,7 +267,3 @@ void voting_solve (std::istream& r, std::ostream& w){
 	    losers.clear();
 	 }
 }
-
-
-
-

@@ -129,7 +129,7 @@ void reallocate(std::vector< std::vector<std::string> >& ballots, std::vector<in
 		    ballot = v[j];
 		    check = findVote(ballot);
 		    temp = 0;
-		    cout<<ballot<<endl;
+		    //cout<<ballot<<endl;
 		    while(ballots[temp].empty() || (v_contains(losers,temp))){
 		        if(check >9){
 		            ballot = ballot.substr(3, ballot.size());
@@ -164,11 +164,8 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
     //count votes into array
     for(size_t i = 0; i < ballots.size(); i++){
         v = ballots[i];
-        for(size_t j=0; j<v.size(); j++){
-            temp = findVote(ballots[i][j]);
-            votes[temp]++;
-            tballots++;
-        }
+		votes[i] = v.size();
+		tballots+= v.size();
     }
     
     int max = 0;
@@ -209,17 +206,15 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
     	//count votes again
     	for(size_t i = 0; i < ballots.size(); i++){
             v = ballots[i];
-            for(size_t j=0; j<v.size(); j++){
-                temp = findVote(ballots[i][j]);
-                votes[temp]++;
-                tballots++;
-            }
+			votes[i] = v.size();
+			tballots+= v.size();
         }
+/*
         for(int p = 0; p<21; p++){
             cout<<votes[p]<<endl;
         }
         cout<<endl;
-      
+*/    
     	max = 0;
     	min = 1000;
 		minMax(max,min,votes);

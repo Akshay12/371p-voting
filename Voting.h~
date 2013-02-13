@@ -15,11 +15,35 @@
 #include <string>
 #include <vector>
 
+//----
+//V_contains
+//----
+bool v_contains(std::vector<int>&, int);
+
+//----
+// findVote
+//----
+int findVote(std::string);
+
+//----
+// minMax
+//----
+void minMax(int&, int&, int[]);
+
+//----
+// reallocate
+//----
+void reallocate(std::vector< std::vector<std::string> >&, std::vector<int>&, int[]);
+
+//----
+// voting_count
+//----
+void voting_count(std::ostream&, std::vector<std::string>&, std::vector< std::vector<std::string> >&, std::vector<std::string>&, std::vector<int>&)
 // ------------
 // Voting_read
 // ------------
 
-bool voting_read (std::istream&, std::ostream&, std::vector<std::string>&, std::vector<std::string>&);
+bool voting_read (std::istream&, std::ostream&, std::vector<std::string>&, std::vector< std::vector<std::string> >&, int);
 
 // ------------
 // voting_write
@@ -31,7 +55,7 @@ void voting_write (std::ostream&, std::vector<std::string>&);
 // voting_count
 //------------
 
-void voting_count(std::ostream&, std::vector<std::string>&, std::vector<std::string>&, std::vector<std::string>&);
+void voting_count(std::ostream&, std::vector<std::string>&, std::vector<std::string>&, std::vector<std::string>&, std::vector<std::string>&);
 // -------------
 // voting_solve
 // -------------

@@ -59,7 +59,6 @@ void voting_solve (std::istream&, std::ostream&);
 #include <vector>
 
 #include <string.h>
-#include "Voting.h"
 
 // ------------
 // voting_read
@@ -329,7 +328,7 @@ To document the program:
 
 #include <iostream> // cin, cout, ios_base
 #include <string>
-#include "Voting.h"
+
 
 // ----
 // main
