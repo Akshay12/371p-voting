@@ -140,6 +140,7 @@ void reallocate(std::vector< std::vector<std::string> >& ballots, std::vector<in
 			
 			    //find new vote, push ballot onto that vector
 			    temp = findVote(ballot);
+			    check = temp;
             }
 			ballots[temp].push_back(ballot);
 		}
