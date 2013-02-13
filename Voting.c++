@@ -15,6 +15,26 @@
 #include <string.h>
 #include "Voting.h"
 
+//----
+// find vote
+//----
+int findVote(std::string ballot){
+    using namespace std;
+    char vote;
+    int temp;
+    int temp2;
+    vote = ballot.at(0);
+	temp = vote - '0';
+	if(ballot.length() >1){
+	    if(isdigit(ballot.at(1))){
+            vote = ballot.at(1);
+            temp2 = vote- '0';
+            temp = (temp * 10)+temp2;
+        }
+    }
+    return temp;
+}
+
 // ------------
 // voting_read
 // ------------
@@ -28,7 +48,8 @@ bool voting_read (std::istream& r, std::ostream& w, std::vector<std::string>& na
         ballots.clear();
     }
 //**************    
-	using namespace std;	
+	using namespace std;
+	int vote;	
 	string line;
 	while(r){
 		getline(r,line);
@@ -39,13 +60,16 @@ bool voting_read (std::istream& r, std::ostream& w, std::vector<std::string>& na
 		        numCand--;
 		    }
 		    else{
-		        ballots.push_back(line);
+		        vote = findVote(line);
+		        ballots[vote].push_back(line);
 		    }
 		}
 		else return false;
 	}
 	return true;
 }
+
+
 
 // -------------
 // voting_write
@@ -75,19 +99,9 @@ void minMax(int& max, int& min, int votes[]){
 
 //takes candidates to be dropped, reallocates their votes to their next best choice
 void reallocate(std::vector<std::string>& ballots, std::vector<int>& losers, int votes[]){
-	char vote;
 	int temp;
-	int temp2;
 	for(size_t i=0; i < ballots.size(); i++){
-	    vote = ballots[i].at(0);
-		temp = vote - '0';
-		if(ballots[i].length() >1){
-		    if(isdigit(ballots[i].at(1))){
-                vote = ballots[i].at(1);
-                temp2 = vote- '0';
-                temp = (temp * 10)+temp2;
-            }
-        }
+	    temp = findVote(ballots[i]);
 	//check for candidates numbered 10 or greater
 		for(size_t j = 0; j < losers.size(); j++){
 			while(losers[j] == temp){
@@ -99,16 +113,7 @@ void reallocate(std::vector<std::string>& ballots, std::vector<int>& losers, int
 			        ballots[i] = ballots[i].substr(2, ballots[i].size());
 			    }
 			    //recalculate vote
-			    vote = ballots[i].at(0);
-			    temp = vote - '0';
-			    if(ballots[i].length() > 1){
-			        if(isdigit(ballots[i].at(1))){
-                        vote = ballots[i].at(1);
-                        temp2 = vote- '0';
-                        temp = (temp * 10)+temp2;
-                    }
-                }
-                
+			    temp = findVote(ballots[i]);                
 			    j = 0;
 			    //loop continues until the vote is for someone who isn't a loser.
 			}
@@ -125,20 +130,10 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
     
     int temp;
     using namespace std;
-    char vote;
-    int temp2;
     
     //count votes into array
     for(size_t i = 0; i < ballots.size(); i++){
-        vote = ballots[i].at(0);
-        temp = vote - '0';
-        if(ballots[i].length()>1){
-            if(isdigit(ballots[i].at(1))){
-                vote = ballots[i].at(1);
-                temp2 = vote- '0';
-                temp = (temp * 10)+temp2;
-            }
-        }
+        temp = findVote(ballots[i]);
         votes[temp]++;
     }
     //w<<""<<endl;
@@ -175,15 +170,7 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
 		fill_n(votes,21,-1);
 		//count all votes again
 		for(size_t i = 0; i < ballots.size(); i++){
-        	vote = ballots[i].at(0);
-        	temp = vote - '0';
-        	if(ballots[i].length() >1){
-        	    if(isdigit(ballots[i].at(1))){
-                    vote = ballots[i].at(1);
-                    temp2 = vote- '0';
-                    temp = (temp * 10)+temp2;
-                }
-            }
+        	temp = findVote(ballots[i]);
         	votes[temp]++;
     	}
     	//w<<""<<endl;
@@ -209,7 +196,7 @@ void voting_count(std::ostream& w, std::vector<std::string>& names, std::vector<
 void voting_solve (std::istream& r, std::ostream& w){
     using namespace std;
 	vector<string> names;
-	vector<string> ballots;
+	vector< vector<string> > ballots;
 	vector<string> winners;
 	vector<int> losers;
 	
